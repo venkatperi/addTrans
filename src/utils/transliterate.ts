@@ -117,14 +117,15 @@ export function roman2unicode(
       } else if (u !== undefined) {
         output.push(u);
         if (s === "q") output.push(String.fromCharCode(0x200c));
-        else if (
-          isConsonant(s) &&
-          (idx + s.length >= len ||
-            BASE_ROMAN_TO_UNICODE[input[idx + s.length]] === undefined)
-        )
-          output.push(HALANT);
         found = true;
       }
+
+      if (
+        isConsonant(s) &&
+        (idx + s.length >= len ||
+          BASE_ROMAN_TO_UNICODE[input[idx + s.length]] === undefined)
+      )
+        output.push(HALANT);
 
       if (found) {
         idx += s.length;
