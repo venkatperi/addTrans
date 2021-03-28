@@ -4,7 +4,6 @@ import { Row, Col } from "antd";
 import "antd/dist/antd.css";
 import "./App.css";
 import { roman2unicode, UNICODE_BLOCKS } from "./utils/transliterate";
-
 import convert, { Element } from "xml-js";
 
 const { TextArea } = Input;
@@ -28,9 +27,9 @@ function trans(tag: Element, target: number): Element | undefined {
 
 function addTags(roman: string, target: number): string {
   const data = convert.xml2js(roman, { compact: false });
-  const items = data.elements[0].elements;
+  const items = data?.elements[0]?.elements;
 
-  for (let item of items) {
+  for (let item of items || []) {
     const elements: Element[] = [];
     for (let tag of item.elements) {
       elements.push(tag);

@@ -103,6 +103,7 @@ export function roman2unicode(
     for (let i = 2; i > 0; i--) {
       const s = input.substr(idx, i);
       const u = BASE_ROMAN_TO_UNICODE[s];
+      console.log(s, u, idx, i, isConsonant(s));
 
       let found = false;
       if (isConsonant(prev)) {
@@ -111,14 +112,18 @@ export function roman2unicode(
           output.push(u);
           found = true;
         } else if (MATRAS[s]) {
-          if (MATRAS[s] > 0) {
-            output.push(MATRAS[s]);
-          }
+          if (MATRAS[s] > 0) output.push(MATRAS[s]);
           found = true;
         }
       } else if (u !== undefined) {
         output.push(u);
         if (s === "q") output.push(String.fromCharCode(0x200c));
+        else if (
+          isConsonant(s) &&
+          (idx + s.length >= len ||
+            BASE_ROMAN_TO_UNICODE[input[idx + s.length]] === undefined)
+        )
+          output.push(HALANT);
         found = true;
       }
 
@@ -129,12 +134,12 @@ export function roman2unicode(
       } else if (i === 1) {
         prev = s;
         output.push(s);
-        // tslint:disable-next-line:no-increment-decrement
         idx++;
       }
     }
   }
 
+  console.log(output);
   return output
     .map((x) => (typeof x === "number" ? String.fromCharCode(x + block) : x))
     .join("");
