@@ -103,7 +103,6 @@ export function roman2unicode(
     for (let i = 2; i > 0; i--) {
       const s = input.substr(idx, i);
       const u = BASE_ROMAN_TO_UNICODE[s];
-      console.log(s, u, idx, i, isConsonant(s));
 
       let found = false;
       if (isConsonant(prev)) {
@@ -139,7 +138,6 @@ export function roman2unicode(
     }
   }
 
-  console.log(output);
   return output
     .map((x) => (typeof x === "number" ? String.fromCharCode(x + block) : x))
     .join("");
