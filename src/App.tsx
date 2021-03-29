@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Alert, Button, Input } from "antd";
+import React, { ChangeEvent, useState } from "react";
+import { Alert, Button } from "antd";
 import { Row, Col } from "antd";
 import "antd/dist/antd.css";
 import "./App.css";
@@ -7,6 +7,7 @@ import AceEditor from "react-ace";
 import { roman2unicode, UNICODE_BLOCKS } from "./utils/transliterate";
 import convert, { Element } from "xml-js";
 import "ace-builds/src-noconflict/mode-xml";
+import FileReaderInput from "react-file-reader-input";
 
 function trans(tag: Element, target: number): Element | undefined {
   const el = tag.elements && tag.elements.length > 0 && tag.elements[0];
@@ -60,10 +61,22 @@ const App = () => {
   const [converted, setConverted] = useState<string>("");
   const [target] = useState(UNICODE_BLOCKS.telugu);
 
+  const onFile = (event: ChangeEvent, results: FileReaderInput.Result[]) => {
+    for (const [e] of results) {
+      // @ts-ignore
+      setRoman(e.target?.result);
+    }
+  };
+
   return (
     <>
       <Row>
-        <Col span={24}>
+        <Col span={4}>
+          <FileReaderInput as="text" id="my-file-input" onChange={onFile}>
+            <button>Load XML File</button>
+          </FileReaderInput>
+        </Col>
+        <Col span={4}>
           <Button
             onClick={() => {
               setError("");
@@ -85,6 +98,7 @@ const App = () => {
             width="600px"
             className="inputs"
             mode="xml"
+            value={roman}
             onChange={(x) => setRoman(x)}
           />
         </Col>
