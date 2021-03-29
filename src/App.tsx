@@ -3,10 +3,10 @@ import { Alert, Button, Input } from "antd";
 import { Row, Col } from "antd";
 import "antd/dist/antd.css";
 import "./App.css";
+import AceEditor from "react-ace";
 import { roman2unicode, UNICODE_BLOCKS } from "./utils/transliterate";
 import convert, { Element } from "xml-js";
-
-const { TextArea } = Input;
+import "ace-builds/src-noconflict/mode-xml";
 
 function trans(tag: Element, target: number): Element | undefined {
   const el = tag.elements && tag.elements.length > 0 && tag.elements[0];
@@ -81,13 +81,15 @@ const App = () => {
       </Row>
       <Row className="height100">
         <Col span={12} className="height100">
-          <TextArea
+          <AceEditor
+            width="600px"
             className="inputs"
-            onChange={(x) => setRoman(x.target.value)}
+            mode="xml"
+            onChange={(x) => setRoman(x)}
           />
         </Col>
         <Col span={12}>
-          <TextArea className="inputs" readOnly value={converted} />
+          <AceEditor mode="xml" width="600px" readOnly value={converted} />
         </Col>
       </Row>
     </>
