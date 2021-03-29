@@ -1,3 +1,7 @@
 #root, .ant-input-textarea, textarea.ant-input, .height100 {
     height: 100%;
 }
+
+textarea.inputs {
+    height: 90%;
+}

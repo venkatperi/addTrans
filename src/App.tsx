@@ -82,12 +82,12 @@ const App = () => {
       <Row className="height100">
         <Col span={12} className="height100">
           <TextArea
-            className="height100"
+            className="inputs"
             onChange={(x) => setRoman(x.target.value)}
           />
         </Col>
         <Col span={12}>
-          <TextArea className="height100" readOnly value={converted} />
+          <TextArea className="inputs" readOnly value={converted} />
         </Col>
       </Row>
     </>
