@@ -78,6 +78,7 @@ const MATRAS: { [k in string]: number } = {
   o: 74,
   ō: 75,
   aʷ: 76,
+  ḽ: 98,
 };
 
 const HALANT = 77;
@@ -90,9 +91,7 @@ export function roman2unicode(
   input: string | undefined,
   block: number
 ): string {
-  if (!input || input.length === 0) {
-    return "";
-  }
+  if (!input || input.length === 0) return "";
 
   let idx = 0;
   const len = input.length;
@@ -103,8 +102,8 @@ export function roman2unicode(
     for (let i = 2; i > 0; i--) {
       const s = input.substr(idx, i);
       const u = BASE_ROMAN_TO_UNICODE[s];
-
       let found = false;
+
       if (isConsonant(prev)) {
         if (isConsonant(s)) {
           output.push(HALANT);
@@ -138,6 +137,7 @@ export function roman2unicode(
       }
     }
   }
+  console.log(output);
 
   return output
     .map((x) => (typeof x === "number" ? String.fromCharCode(x + block) : x))
