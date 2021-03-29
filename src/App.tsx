@@ -68,6 +68,15 @@ const App = () => {
     }
   };
 
+  const doConvert = () => {
+    setError("");
+    try {
+      setConverted(addTags(roman, target));
+    } catch (e) {
+      setError(e.message);
+    }
+  };
+
   return (
     <>
       <Row>
@@ -77,33 +86,33 @@ const App = () => {
           </FileReaderInput>
         </Col>
         <Col span={4}>
-          <Button
-            onClick={() => {
-              setError("");
-              try {
-                setConverted(addTags(roman, target));
-              } catch (e) {
-                setError(e.message);
-              }
-            }}
-          >
-            Convert
-          </Button>
+          <Button onClick={doConvert}>Convert</Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
           {error.length > 0 && <Alert type="error" message={error} />}
         </Col>
       </Row>
       <Row className="height100">
         <Col span={12} className="height100">
           <AceEditor
-            width="600px"
+            width="100%"
+            height="90%"
             className="inputs"
             mode="xml"
             value={roman}
-            onChange={(x) => setRoman(x)}
+            onChange={setRoman}
           />
         </Col>
         <Col span={12}>
-          <AceEditor mode="xml" width="600px" readOnly value={converted} />
+          <AceEditor
+            mode="xml"
+            width="100%"
+            height="90%"
+            readOnly
+            value={converted}
+          />
         </Col>
       </Row>
     </>
