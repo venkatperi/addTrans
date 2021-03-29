@@ -73,7 +73,7 @@ const App = () => {
       <Row>
         <Col span={4}>
           <FileReaderInput as="text" id="my-file-input" onChange={onFile}>
-            <button>Load XML File</button>
+            <Button>Load XML File</Button>
           </FileReaderInput>
         </Col>
         <Col span={4}>
