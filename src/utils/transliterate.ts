@@ -137,7 +137,6 @@ export function roman2unicode(
       }
     }
   }
-  console.log(output);
 
   return output
     .map((x) => (typeof x === "number" ? String.fromCharCode(x + block) : x))

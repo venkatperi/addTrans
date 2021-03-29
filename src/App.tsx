@@ -50,7 +50,8 @@ function addTags(roman: string, target: number): string {
     }
     item.elements = elements;
   }
-  return convert.js2xml(data, { spaces: 2 });
+  const res = convert.js2xml(data);
+  return res.replaceAll("</hw>", "</hw>\n");
 }
 
 const App = () => {
