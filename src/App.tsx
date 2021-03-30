@@ -100,7 +100,8 @@ const App = () => {
         </Col>
         <Col span={8}>
           {converted.length > 0 && <Button onClick={download}>Download</Button>}
-          <a style={{ display: "none" }} id="download_link">
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <a style={{ display: "none" }} id="download_link" href="#">
             download it
           </a>
         </Col>
