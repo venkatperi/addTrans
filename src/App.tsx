@@ -77,16 +77,32 @@ const App = () => {
     }
   };
 
+  const download = () => {
+    const data = new Blob([converted], { type: "text/xml" });
+    const url = window.URL.createObjectURL(data);
+    const link = document.getElementById("download_link") as HTMLAnchorElement;
+    link.download = "converted.xml";
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <>
       <Row>
-        <Col span={4}>
+        <Col span={8}>
           <FileReaderInput as="text" id="my-file-input" onChange={onFile}>
             <Button>Load XML File</Button>
           </FileReaderInput>
         </Col>
-        <Col span={4}>
+        <Col span={8}>
           <Button onClick={doConvert}>Convert</Button>
+        </Col>
+        <Col span={8}>
+          {converted.length > 0 && <Button onClick={download}>Download</Button>}
+          <a style={{ display: "none" }} id="download_link">
+            download it
+          </a>
         </Col>
       </Row>
       <Row>
