@@ -84,7 +84,8 @@ const MATRAS: { [k in string]: number } = {
 const HALANT = 77;
 
 function isConsonant(ch: string): boolean {
-  return BASE_ROMAN_TO_UNICODE[ch] >= 21 && BASE_ROMAN_TO_UNICODE[ch] <= 57;
+  const u = BASE_ROMAN_TO_UNICODE[ch];
+  return (u >= 1 && u < 5) || (u >= 21 && u <= 57);
 }
 
 export function roman2unicode(
@@ -112,9 +113,6 @@ export function roman2unicode(
         } else if (MATRAS[s]) {
           if (MATRAS[s] > 0) output.push(MATRAS[s]);
           found = true;
-        } else if (["ṃ", "ṁ", "ḥ"].includes(s)) {
-          output.push(u);
-          found = true;
         }
       } else if (u !== undefined) {
         output.push(u);
@@ -124,6 +122,7 @@ export function roman2unicode(
 
       if (
         isConsonant(s) &&
+        u > 4 &&
         (idx + s.length >= len ||
           BASE_ROMAN_TO_UNICODE[input[idx + s.length]] === undefined)
       )
