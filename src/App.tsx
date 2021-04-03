@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import { Alert, Button } from "antd";
+import { Alert, Button, Checkbox } from "antd";
 import { Row, Col } from "antd";
 import "antd/dist/antd.css";
 import "./App.css";
@@ -55,11 +55,21 @@ function addTags(roman: string, target: number): string {
   return res.replaceAll("</hw>", "</hw>\n");
 }
 
+function doFormatXml(xml: string, format: boolean): string {
+  const data = convert.xml2js(xml, { compact: false });
+  let res = convert
+    .js2xml(data, { spaces: format ? 4 : undefined })
+    .replaceAll(/(\n[ ]+\n)+/g, "\n");
+  if (!format) res = res.replaceAll(/(\n[ ]*\n?)+/g, " ");
+  return format ? res : res.replaceAll("</hw>", "</hw>\n");
+}
+
 const App = () => {
   const [roman, setRoman] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [converted, setConverted] = useState<string>("");
   const [target] = useState(UNICODE_BLOCKS.telugu);
+  const [formatXml, setFormatXml] = useState(false);
 
   const onFile = (event: ChangeEvent, results: FileReaderInput.Result[]) => {
     for (const [e] of results) {
@@ -90,10 +100,23 @@ const App = () => {
   return (
     <>
       <Row>
-        <Col span={8}>
+        <Col span={4}>
           <FileReaderInput as="text" id="my-file-input" onChange={onFile}>
             <Button>Load XML File</Button>
           </FileReaderInput>
+        </Col>
+        <Col span={4}>
+          {/*<Checkbox*/}
+          {/*  value={formatXml}*/}
+          {/*  onChange={(e) => {*/}
+          {/*    const val = e.target.checked;*/}
+          {/*    setFormatXml(val);*/}
+          {/*    setRoman(doFormatXml(roman, val));*/}
+          {/*    setConverted(doFormatXml(converted, val));*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  Format XML*/}
+          {/*</Checkbox>*/}
         </Col>
         <Col span={8}>
           <Button onClick={doConvert}>Convert</Button>

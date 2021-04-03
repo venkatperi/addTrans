@@ -112,6 +112,9 @@ export function roman2unicode(
         } else if (MATRAS[s]) {
           if (MATRAS[s] > 0) output.push(MATRAS[s]);
           found = true;
+        } else if (["ṃ", "ṁ", "ḥ"].includes(s)) {
+          output.push(u);
+          found = true;
         }
       } else if (u !== undefined) {
         output.push(u);
