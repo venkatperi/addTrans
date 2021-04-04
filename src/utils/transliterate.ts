@@ -85,7 +85,7 @@ const HALANT = 77;
 
 function isConsonant(ch: string): boolean {
   const u = BASE_ROMAN_TO_UNICODE[ch];
-  return (u >= 1 && u < 5) || (u >= 21 && u <= 57);
+  return u === 1 || (u >= 21 && u <= 57);
 }
 
 export function roman2unicode(
@@ -112,6 +112,9 @@ export function roman2unicode(
           found = true;
         } else if (MATRAS[s]) {
           if (MATRAS[s] > 0) output.push(MATRAS[s]);
+          found = true;
+        } else if ([1, 2, 3, 4].includes(u)) {
+          output.push(u);
           found = true;
         }
       } else if (u !== undefined) {
