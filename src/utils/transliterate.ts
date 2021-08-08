@@ -103,6 +103,9 @@ export function roman2unicode(
     for (let i = 2; i > 0; i--) {
       const s = input.substr(idx, i);
       const u = BASE_ROMAN_TO_UNICODE[s];
+      const nextIdx = idx + s.length;
+      const nextU =
+        nextIdx < len ? BASE_ROMAN_TO_UNICODE[input[nextIdx]] : undefined;
       let found = false;
 
       if (isConsonant(prev)) {
@@ -123,12 +126,7 @@ export function roman2unicode(
         found = true;
       }
 
-      if (
-        isConsonant(s) &&
-        u > 4 &&
-        (idx + s.length >= len ||
-          BASE_ROMAN_TO_UNICODE[input[idx + s.length]] === undefined)
-      )
+      if (isConsonant(s) && u > 4 && (nextIdx >= len || nextU === undefined))
         output.push(HALANT);
 
       if (found) {
