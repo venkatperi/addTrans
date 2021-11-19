@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import { Alert, Button, Checkbox } from "antd";
+import { Alert, Button, Checkbox, InputNumber } from "antd";
 import { Row, Col } from "antd";
 import "antd/dist/antd.css";
 import "./App.css";
@@ -71,14 +71,20 @@ function addTags(roman: string, target: number, addScr: boolean): string {
   return res.replaceAll("</hw>", "</hw>\n");
 }
 
-// function doFormatXml(xml: string, format: boolean): string {
-//   const data = convert.xml2js(xml, { compact: false });
-//   let res = convert
-//     .js2xml(data, { spaces: format ? 4 : undefined })
-//     .replaceAll(/(\n[ ]+\n)+/g, "\n");
-//   if (!format) res = res.replaceAll(/(\n[ ]*\n?)+/g, " ");
-//   return format ? res : res.replaceAll("</hw>", "</hw>\n");
-// }
+function reNumber(roman: string, start: number): string {
+  const data = convert.xml2js(roman, { compact: false });
+  const items = data?.elements[0]?.elements;
+  let counter = start;
+
+  for (let item of items || []) {
+    const num = item.elements?.find((x: any) => x.name === "num");
+    if (num && num.elements) {
+      num.elements = [{ type: "text", text: String(counter++) }];
+    }
+  }
+  const res = convert.js2xml(data);
+  return res.replaceAll("</hw>", "</hw>\n");
+}
 
 const App = () => {
   const [roman, setRoman] = useState<string>("");
@@ -86,6 +92,7 @@ const App = () => {
   const [converted, setConverted] = useState<string>("");
   const [target] = useState(UNICODE_BLOCKS.telugu);
   const [addScr, setAddScr] = useState(false);
+  const [starting, setStarting] = useState(1);
 
   const onFile = (event: ChangeEvent, results: FileReaderInput.Result[]) => {
     for (const [e] of results) {
@@ -98,6 +105,15 @@ const App = () => {
     setError("");
     try {
       setConverted(addTags(roman, target, addScr));
+    } catch (e) {
+      setError(e.message);
+    }
+  };
+
+  const doRenumber = () => {
+    setError("");
+    try {
+      setRoman(reNumber(roman, starting));
     } catch (e) {
       setError(e.message);
     }
@@ -132,7 +148,17 @@ const App = () => {
             Add SCR tag
           </Checkbox>
         </Col>
-        <Col span={8}>
+        <Col span={6}>
+          <Button onClick={doRenumber}>Re-number</Button>
+          <InputNumber
+            value={starting}
+            min={1}
+            onChange={(val) => {
+              if (typeof val === "number") setStarting(val);
+            }}
+          />
+        </Col>
+        <Col span={2}>
           <Button onClick={doConvert}>Convert</Button>
         </Col>
         <Col span={8}>
