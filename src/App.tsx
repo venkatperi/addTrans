@@ -67,8 +67,18 @@ function addTags(roman: string, target: number, addScr: boolean): string {
     }
     item.elements = elements;
   }
-  const res = convert.js2xml(data);
-  return res.replaceAll("</hw>", "</hw>\n");
+
+  return convert.js2xml(data).replaceAll("</hw>", "</hw>\n");
+}
+
+function download(source: string, id: string, name: string) {
+  const data = new Blob([source], { type: "text/xml" });
+  const url = window.URL.createObjectURL(data);
+  const link = document.getElementById(id) as HTMLAnchorElement;
+  link.download = name;
+  link.href = url;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 function reNumber(roman: string, start: number): string {
@@ -88,8 +98,8 @@ function reNumber(roman: string, start: number): string {
       ];
     }
   }
-  const res = convert.js2xml(data);
-  return res.replaceAll("</hw>", "</hw>\n");
+
+  return convert.js2xml(data).replaceAll("</hw>", "</hw>\n");
 }
 
 const App = () => {
@@ -100,12 +110,15 @@ const App = () => {
   const [addScr, setAddScr] = useState(false);
   const [starting, setStarting] = useState(1);
 
-  const onFile = (event: ChangeEvent, results: FileReaderInput.Result[]) => {
-    for (const [e] of results) {
-      // @ts-ignore
-      setRoman(e.target?.result);
-    }
-  };
+  const onFile = useCallback(
+    (event: ChangeEvent, results: FileReaderInput.Result[]) => {
+      for (const [e] of results) {
+        // @ts-ignore
+        setRoman(e.target?.result);
+      }
+    },
+    [setRoman]
+  );
 
   const doConvert = useCallback(() => {
     setError("");
@@ -125,15 +138,15 @@ const App = () => {
     }
   }, [setError, setRoman, roman, starting]);
 
-  const download = useCallback(() => {
-    const data = new Blob([converted], { type: "text/xml" });
-    const url = window.URL.createObjectURL(data);
-    const link = document.getElementById("download_link") as HTMLAnchorElement;
-    link.download = "converted.xml";
-    link.href = url;
-    link.click();
-    URL.revokeObjectURL(url);
-  }, [converted]);
+  const downloadRoman = useCallback(
+    () => download(roman, "download_roman_link", "original.xml"),
+    [roman]
+  );
+
+  const downloadConverted = useCallback(
+    () => download(converted, "download_converted_link", "converted.xml"),
+    [converted]
+  );
 
   return (
     <>
@@ -143,7 +156,7 @@ const App = () => {
             <Button>Load XML File</Button>
           </FileReaderInput>
         </Col>
-        <Col span={4}>
+        <Col span={2}>
           <Checkbox
             value={addScr}
             onChange={(e) => {
@@ -154,7 +167,7 @@ const App = () => {
             Add SCR tag
           </Checkbox>
         </Col>
-        <Col span={6}>
+        <Col span={8}>
           <Button onClick={doRenumber}>Re-number</Button>
           <InputNumber
             value={starting}
@@ -163,14 +176,23 @@ const App = () => {
               if (typeof val === "number") setStarting(val);
             }}
           />
+          {roman.length > 0 && (
+            <Button onClick={downloadRoman}>Download</Button>
+          )}
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <a style={{ display: "none" }} id="download_roman_link" href="#">
+            download it
+          </a>
         </Col>
         <Col span={2}>
           <Button onClick={doConvert}>Convert</Button>
         </Col>
         <Col span={8}>
-          {converted.length > 0 && <Button onClick={download}>Download</Button>}
+          {converted.length > 0 && (
+            <Button onClick={downloadConverted}>Download</Button>
+          )}
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a style={{ display: "none" }} id="download_link" href="#">
+          <a style={{ display: "none" }} id="download_converted_link" href="#">
             download it
           </a>
         </Col>
