@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Alert, Button, Checkbox, InputNumber } from "antd";
 import { Row, Col } from "antd";
 import "antd/dist/antd.css";
@@ -77,9 +77,15 @@ function reNumber(roman: string, start: number): string {
   let counter = start;
 
   for (let item of items || []) {
-    const num = item.elements?.find((x: any) => x.name === "num");
-    if (num && num.elements) {
-      num.elements = [{ type: "text", text: String(counter++) }];
+    if (item.name === "hw" && item.elements) {
+      item.elements = [
+        {
+          type: "element",
+          name: "num",
+          elements: [{ type: "text", text: String(counter++) }],
+        },
+        ...item.elements.filter((x: any) => x.name !== "num"),
+      ];
     }
   }
   const res = convert.js2xml(data);
@@ -101,25 +107,25 @@ const App = () => {
     }
   };
 
-  const doConvert = () => {
+  const doConvert = useCallback(() => {
     setError("");
     try {
       setConverted(addTags(roman, target, addScr));
     } catch (e) {
       setError(e.message);
     }
-  };
+  }, [setError, setConverted, roman, target, addScr]);
 
-  const doRenumber = () => {
+  const doRenumber = useCallback(() => {
     setError("");
     try {
       setRoman(reNumber(roman, starting));
     } catch (e) {
       setError(e.message);
     }
-  };
+  }, [setError, setRoman, roman, starting]);
 
-  const download = () => {
+  const download = useCallback(() => {
     const data = new Blob([converted], { type: "text/xml" });
     const url = window.URL.createObjectURL(data);
     const link = document.getElementById("download_link") as HTMLAnchorElement;
@@ -127,7 +133,7 @@ const App = () => {
     link.href = url;
     link.click();
     URL.revokeObjectURL(url);
-  };
+  }, [converted]);
 
   return (
     <>
