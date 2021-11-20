@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import { Alert, Button, Checkbox, InputNumber } from "antd";
 import { Row, Col } from "antd";
 import "antd/dist/antd.css";
