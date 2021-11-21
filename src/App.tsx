@@ -14,26 +14,29 @@ function trans(tag: Element, target: number, addScr: boolean): Element[] {
   // @ts-ignore
   const tel = roman2unicode(el?.text, target);
 
-  const conv = {
-    type: "element",
-    name: `${tag.name}t`,
-    elements: [
-      {
-        type: "text",
-        text: tel,
-      },
-    ],
-  };
+  const elements = [
+    tag,
+    {
+      type: "element",
+      name: `${tag.name}t`,
+      elements: [
+        {
+          type: "text",
+          text: tel,
+        },
+      ],
+    },
+  ];
 
   return addScr
     ? [
         {
           type: "element",
           name: "scr",
-          elements: [tag, conv],
+          elements,
         },
       ]
-    : [tag, conv];
+    : elements;
 }
 
 function addTags(roman: string, target: number, addScr: boolean): string {
@@ -42,19 +45,18 @@ function addTags(roman: string, target: number, addScr: boolean): string {
 
   for (let item of items || []) {
     const elements: Element[] = [];
+
     for (let tag of item.elements) {
       const convertTag =
         ["mw", "pl", "ob"].includes(tag.name) && tag.elements?.length > 0;
 
       if (convertTag) {
-        const t = trans(tag, target, addScr);
-        elements.push(...t);
+        elements.push(...trans(tag, target, addScr));
       } else if (tag.name === "mg") {
         const el2: Element[] = [];
         for (let tag2 of tag.elements) {
           if (tag2.name === "tel") {
-            const t = trans(tag2, target, addScr);
-            el2.push(...t);
+            elements.push(...trans(tag2, target, addScr));
           } else {
             el2.push(tag2);
           }
@@ -159,10 +161,7 @@ const App = () => {
         <Col span={2}>
           <Checkbox
             value={addScr}
-            onChange={(e) => {
-              const val = e.target.checked;
-              setAddScr(val);
-            }}
+            onChange={(e) => setAddScr(e.target.checked)}
           >
             Add SCR tag
           </Checkbox>
