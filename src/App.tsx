@@ -56,7 +56,7 @@ function addTags(roman: string, target: number, addScr: boolean): string {
         const el2: Element[] = [];
         for (let tag2 of tag.elements) {
           if (tag2.name === "tel") {
-            elements.push(...trans(tag2, target, addScr));
+            el2.push(...trans(tag2, target, addScr));
           } else {
             el2.push(tag2);
           }
